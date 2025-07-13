@@ -36,6 +36,23 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   try {
-    
-  } catch (error) {}
+    const { name, password } = req.body;
+
+    //finding user by name
+    const user = User.findOne({ name });
+    if (!user) res.status(401).json({ message: "invalid credentials" });
+
+    //matching passwords
+    const isMatch = bcrypt.compare(password, user.password);
+    if (!isMatch) res.status(401).json({ message: "invalid credentials" });
+
+    // generating token after successfull login
+    const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
+
+    res.status(201).json({ message: "user logged in!", token });
+  } catch (error) {
+    res.status(500).json({ message: "server error" });
+  }
 };
