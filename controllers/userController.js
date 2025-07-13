@@ -39,11 +39,11 @@ export const loginUser = async (req, res) => {
     const { name, password } = req.body;
 
     //finding user by name
-    const user = User.findOne({ name });
+    const user = await User.findOne({ name });
     if (!user) res.status(401).json({ message: "invalid credentials" });
 
     //matching passwords
-    const isMatch = bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) res.status(401).json({ message: "invalid credentials" });
 
     // generating token after successfull login
