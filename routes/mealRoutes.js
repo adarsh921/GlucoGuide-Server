@@ -5,14 +5,14 @@ import {
   getMealsByDate,
   getTodayMeals,
   createMeal,
-  // updateMeal,
-  // deleteMeal,
+  updateMeal,
+  deleteMeal,
 } from "../controllers/mealController.js";
 
 router.get("/today", authenticate, getTodayMeals);
 router.get("/", authenticate, getMealsByDate);
 router.post("/", authenticate, createMeal);
-// router.put("/:id",updateMeal)
-// router.delete("/:id",deleteMeal)
+router.put("/:id",authenticate,updateMeal)
+router.delete("/:id",authenticate,deleteMeal)
 
 export default router;
