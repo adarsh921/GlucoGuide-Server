@@ -5,7 +5,7 @@ import portionSizes from "../data/portionSizes.js";
 export const getTodayMeals = async (req, res) => {
   try {
     const now = new Date();
-    const userId = req.userId;
+    const userId = req.user.userId;
 
     const startOfDay = new Date(now);
     startOfDay.setHours(0, 0, 0, 0);
@@ -17,7 +17,16 @@ export const getTodayMeals = async (req, res) => {
       userId,
       date: { $gte: startOfDay, $lte: endOfDay },
     });
-    res.status(200).json(meals);
+    console.log(meals);
+    const totalSugar = meals.reduce((sum, meal) => {
+      const totalGramsConsumed = (meal.sugarContent * meal.quantity) / 100;
+      return sum + totalGramsConsumed;
+    }, 0);
+
+    console.log(totalSugar);
+    
+
+    res.status(200).json({ totalSugar, meals });
   } catch (error) {
     console.error("Error fetching today's meals:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -27,7 +36,7 @@ export const getTodayMeals = async (req, res) => {
 export const getMealsByDate = async (req, res) => {
   try {
     const dateparam = req.query.date;
-    const userId = req.userId;
+    const userId = req.user.userId;
 
     const startOfDay = new Date(dateparam);
     startOfDay.setHours(0, 0, 0, 0);

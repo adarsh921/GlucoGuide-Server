@@ -3,7 +3,10 @@ import express from "express";
 import mealRoutes from "./routes/mealRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import mongoose from "mongoose";
+import cors from 'cors';
 dotenv.config();
+
+
 mongoose
   .connect("mongodb://localhost:27017/GlucoGuide", {
     useNewUrlParser: true,
@@ -20,6 +23,12 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials:true
+  })
+);
 app.use(express.json());
 app.use("/api/meals", mealRoutes);
 app.use("/api/auth",userRoutes);
