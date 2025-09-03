@@ -1,14 +1,16 @@
 import express from "express";
 import {
   addVitals,
-  viewVitals,
   updateVitals,
   deleteVitals,
+  viewTodayVitals,
+  viewVitalsByDate,
 } from "../controllers/vitalController.js";
 import authenticate from "../middleware/auth.js";
 const router = express.Router();
 router.post("/", authenticate, addVitals);
-router.get("/", authenticate, viewVitals);
+router.get("/today",authenticate,viewTodayVitals);
+router.get("/", authenticate, viewVitalsByDate);
 router.put("/:id", authenticate, updateVitals);
 router.delete("/:id", authenticate, deleteVitals);
 export default router;
