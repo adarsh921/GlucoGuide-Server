@@ -1,4 +1,4 @@
-export default{
+export default {
   "roti": { "sugarPer100g": 2.5 },
   "rice": { "sugarPer100g": 0.1 },
   "boiled potato": { "sugarPer100g": 0.8 },
@@ -28,5 +28,17 @@ export default{
   "kheer": { "sugarPer100g": 14 },
   "halwa (gajar)": { "sugarPer100g": 18 },
   "pulao": { "sugarPer100g": 1.5 },
-  "sambar": { "sugarPer100g": 0.8 }
+  "sambar": { "sugarPer100g": 0.8 },
+
+  // Added Sabjis
+  "bhindi (okra)": { "sugarPer100g": 1.5 },
+  "baingan (brinjal)": { "sugarPer100g": 2.2 },
+  "cabbage (cooked)": { "sugarPer100g": 3.2 },
+  "cauliflower (cooked)": { "sugarPer100g": 2.1 },
+  "palak (spinach, cooked)": { "sugarPer100g": 0.4 },
+  "lauki (bottle gourd)": { "sugarPer100g": 1.2 },
+  "tinda": { "sugarPer100g": 1.6 },
+  "parwal (pointed gourd)": { "sugarPer100g": 2.0 },
+  "gobi aloo (cauliflower & potato curry)": { "sugarPer100g": 2.8 },
+  "mixed veg curry": { "sugarPer100g": 3.5 }
 }

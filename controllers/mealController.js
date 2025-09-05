@@ -24,7 +24,6 @@ export const getTodayMeals = async (req, res) => {
     }, 0);
 
     console.log(totalSugar);
-    
 
     res.status(200).json({ totalSugar, meals });
   } catch (error) {
@@ -60,9 +59,9 @@ export const createMeal = async (req, res) => {
     const userId = req.user.userId;
     console.log(userId);
 
-    const { foodName, unit, mealTime, date, portionSize } = req.body;
+    const { foodName, mealTime, date, portionSize, portion_consumed } = req.body;
 
-    if (!foodName || !unit || !mealTime) {
+    if (!foodName || !portion_consumed || !mealTime) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -71,8 +70,8 @@ export const createMeal = async (req, res) => {
     const meal = new Meal({
       userId,
       foodName,
-      quantity: portionSizes[portionSize],
-      unit,
+      quantity: portionSizes[portionSize] * portion_consumed,
+      portion_consumed,
       mealTime,
       sugarContent: foodData[foodName]?.sugarPer100g || 0,
     });
@@ -82,7 +81,7 @@ export const createMeal = async (req, res) => {
 
     return res.status(200).json({
       message: "All good!",
-      data: { userId, foodName, unit, mealTime, date },
+      data: { userId, foodName, mealTime, date },
     });
   } catch (err) {
     console.error("Error in createMeal:", err);
@@ -96,10 +95,10 @@ export const updateMeal = async (req, res) => {
 
     const id = req.params.id;
 
-    const { foodName, unit, mealTime, portionSize } = req.body;
+    const { foodName, mealTime, portionSize,portion_consumed } = req.body;
     const updatedMeal = await Meal.findByIdAndUpdate(
       id,
-      { foodName, quantity: portionSizes[portionSize], unit, mealTime },
+      { foodName, quantity: portionSizes[portionSize]*portion_consumed, unit, mealTime },
       { new: true, runValidators: true }
     );
 
