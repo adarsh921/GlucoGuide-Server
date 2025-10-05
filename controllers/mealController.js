@@ -80,7 +80,7 @@ export const createMeal = async (req, res) => {
     const savedMeal = await meal.save();
 
     return res.status(200).json({
-      message: "All good!",
+      message: "Voila!, meal created...",
       data: { userId, foodName, mealTime, date },
     });
   } catch (err) {
