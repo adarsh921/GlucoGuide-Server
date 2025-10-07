@@ -11,7 +11,7 @@ const analyzeVitals = async (vitals) => {
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `Give an analysis on these vitals ${vitals}, only return the text in json format and format it in readable form, make different sections for different parts of analysis, remove all the wildcard characters except fullstop, remove next line characters.`,
+    contents: `Give an analysis on these vitals and also suggest some indian meal options based on my vitals ${vitals}, only return the text in json format and format it in readable form, make different sections for different parts of analysis, remove all the wildcard characters except fullstop, remove next line characters.`,
   });
   console.log(response);
 
@@ -21,7 +21,6 @@ const analyzeVitals = async (vitals) => {
 export const addVitals = async (req, res) => {
   try {
     const {
-      userId,
       bloodSugarLevel,
       fastingOrPostMeal,
       bpSystolic,
@@ -35,13 +34,14 @@ export const addVitals = async (req, res) => {
       notes,
     } = req.body;
 
-    if (!userId || !bloodSugarLevel || !fastingOrPostMeal) {
+    if (!bloodSugarLevel || !fastingOrPostMeal) {
       return res.status(400).json({
-        message: "userId, bloodSugarLevel and fastingOrPostMeal are required",
+        message: "bloodSugarLevel and fastingOrPostMeal are required",
       });
     }
 
     const bmi = weight && height ? weight / (height / 100) ** 2 : null; // convert cm→m
+    const userId = req.user.userId;
 
     const vitals = new Vitals({
       userId,
