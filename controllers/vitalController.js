@@ -11,7 +11,7 @@ const analyzeVitals = async (vitals) => {
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `Give an analysis on these vitals and also suggest some indian meal options based on my vitals ${vitals}, only return the text in json format and format it in readable form, make different sections for different parts of analysis, remove all the wildcard characters except fullstop, remove next line characters.`,
+    contents: `Give an analysis on these vitals and also suggest some indian meal options based on my vitals ${vitals}, only return the text in json format,your response should be divided into different categories with each category having a unique name and taking a different paragraph.`,
   });
   console.log(response);
 
@@ -61,11 +61,11 @@ export const addVitals = async (req, res) => {
 
     const savedVitals = await vitals.save();
 
-    const analysis = await analyzeVitals(savedVitals);
+    // const analysis = await analyzeVitals(savedVitals);
     return res.status(200).json({
       message: "Vitals added successfully",
       savedVitals,
-      analysis,
+      // analysis,
     });
   } catch (error) {
     console.error("Error in creating vitals", error);
@@ -172,6 +172,7 @@ export const updateVitals = async (req, res) => {
     });
   }
 };
+
 export const deleteVitals = async (req, res) => {
   try {
     const id = req.params.id;

@@ -22,7 +22,7 @@ const vitalsSchema = new mongoose.Schema(
     waistCircumference: Number,
     steps: Number,
     sleepHours: Number,
-    stressLevel: { type: String, enum: ["Low", "Moderate", "High"] },
+    stressLevel: { type: String, enum: ["Low", "Moderate", "High",""] },
     notes: String,
   },
   { timestamps: true }
