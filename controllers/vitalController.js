@@ -11,12 +11,28 @@ const analyzeVitals = async (vitals) => {
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `Give an analysis on these vitals and also suggest some indian meal options based on my vitals ${vitals}, only return the text in json format,your response should be divided into different categories with each category having a unique name and taking a different paragraph.`,
+    contents:`analyze these:${vitals}`,
   });
   console.log(response);
 
   return response.text;
 };
+
+export const getAnalysis = async (req,res) => {
+  try {
+    const allVitals = await Vitals.find({});
+    console.log(allVitals);
+    const analysis = await analyzeVitals(allVitals);
+    console.log(analysis);
+    return res.status(200).json({
+      message:"here is your analysis",
+      analysis
+    })
+  } catch (error) {
+    console.error("Some error:", error);
+  }
+};
+
 
 export const addVitals = async (req, res) => {
   try {
@@ -61,11 +77,9 @@ export const addVitals = async (req, res) => {
 
     const savedVitals = await vitals.save();
 
-    // const analysis = await analyzeVitals(savedVitals);
     return res.status(200).json({
       message: "Vitals added successfully",
       savedVitals,
-      // analysis,
     });
   } catch (error) {
     console.error("Error in creating vitals", error);
@@ -159,7 +173,6 @@ export const updateVitals = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    const newAnalysis = analyzeVitals(updatedVital);
     res.status(200).json({
       message: "Vitals Updated Successfully",
       updatedVital,
