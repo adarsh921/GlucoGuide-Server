@@ -11,7 +11,32 @@ const analyzeVitals = async (vitals) => {
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents:`analyze these:${vitals}`,
+    contents:`
+    Analyze the following patient vital signs and generate a comprehensive report.
+    
+    ***
+    
+    **Instructions for Output Format:**
+    1.  The entire response must be formatted using Markdown.
+    2.  Use a Heading 2 (##) for each main section.
+    3.  Ensure each section contains at least one clear, separate paragraph.
+    4.  The sections must be in this exact order:
+        
+        ## 1. Vitals Summary and Interpretation
+        * Provide a brief paragraph summarizing the key readings.
+        * Use a bulleted list to interpret each abnormal vital sign.
+        
+        ## 2. Risk Assessment
+        * Provide a paragraph clearly stating the overall risk level (Low, Moderate, High).
+        * Explain the primary factors contributing to this risk level in a second paragraph.
+        
+        ## 3. Recommended Next Steps
+        * Provide a list of 3-5 specific, actionable steps based on the analysis.
+        
+    ***
+    
+    **Patient Vitals Data:**
+    ${vitals}`,
   });
   console.log(response);
 
