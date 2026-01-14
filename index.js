@@ -7,9 +7,8 @@ import mongoose from "mongoose";
 import cors from 'cors';
 dotenv.config();
 
-
 mongoose
-  .connect("mongodb://localhost:27017/GlucoGuide", {
+  .connect("mongodb+srv://cyber13jan:Y7Wr6Qhsw0694mhu@glucoguidedb.rybgvky.mongodb.net/?appName=GlucoGuideDB", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
