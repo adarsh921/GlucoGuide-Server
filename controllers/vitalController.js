@@ -1,63 +1,8 @@
 import Vitals from "../models/Vitals.js";
+import Meal from "../models/Meal.js";
 import dotenv from "dotenv";
-import { GoogleGenAI } from "@google/genai";
 dotenv.config();
-
-const ai = new GoogleGenAI({});
-// console.log(ai);
-
-const analyzeVitals = async (vitals) => {
-  console.log("HELLO I AM ADARSH");
-
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents:`
-    Analyze the following patient vital signs and generate a comprehensive report.
-    
-    ***
-    
-    **Instructions for Output Format:**
-    1.  The entire response must be formatted using Markdown.
-    2.  Use a Heading 2 (##) for each main section.
-    3.  Ensure each section contains at least one clear, separate paragraph.
-    4.  The sections must be in this exact order:
-        
-        ## 1. Vitals Summary and Interpretation
-        * Provide a brief paragraph summarizing the key readings.
-        * Use a bulleted list to interpret each abnormal vital sign.
-        
-        ## 2. Risk Assessment
-        * Provide a paragraph clearly stating the overall risk level (Low, Moderate, High).
-        * Explain the primary factors contributing to this risk level in a second paragraph.
-        
-        ## 3. Recommended Next Steps
-        * Provide a list of 3-5 specific, actionable steps based on the analysis.
-        
-    ***
-    
-    **Patient Vitals Data:**
-    ${vitals}`,
-  });
-  console.log(response);
-
-  return response.text;
-};
-
-export const getAnalysis = async (req,res) => {
-  try {
-    const allVitals = await Vitals.find({});
-    console.log(allVitals);
-    const analysis = await analyzeVitals(allVitals);
-    console.log(analysis);
-    return res.status(200).json({
-      message:"here is your analysis",
-      analysis
-    })
-  } catch (error) {
-    console.error("Some error:", error);
-  }
-};
-
+import { analyzeVitals, renderHealthScore } from "./Helpers/vitalHelpers.js";
 
 export const addVitals = async (req, res) => {
   try {
@@ -81,7 +26,7 @@ export const addVitals = async (req, res) => {
       });
     }
 
-    const bmi = weight && height ? weight / (height / 100) ** 2 : null; // convert cm→m
+    const bmi = weight && height ? weight / height ** 2 : null; // convert cm→m
     const userId = req.user.userId;
 
     const vitals = new Vitals({
@@ -139,15 +84,15 @@ export const viewTodayVitals = async (req, res) => {
 
 export const viewVitalsByDate = async (req, res) => {
   try {
-    const dateparam = req.query.date;
+    const { startDate, endDate } = req.query;
     const userId = req.user.userId;
-    const startOfDay = new Date(dateparam);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(dateparam);
-    endOfDay.setHours(23, 59, 59, 999);
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
     const allVitals = await Vitals.find({
       userId,
-      date: { $gte: startOfDay, $lte: endOfDay },
+      date: { $gte: start, $lte: end },
     });
 
     return res.status(200).json({
@@ -227,5 +172,51 @@ export const deleteVitals = async (req, res) => {
     res.status(500).json({
       message: "Internal Server Error",
     });
+  }
+};
+
+export const getAnalysis = async (req, res) => {
+  try {
+    const allVitals = await Vitals.find({});
+    console.log(allVitals);
+    const analysis = await analyzeVitals(allVitals);
+    console.log(analysis);
+    return res.status(200).json({
+      message: "here is your analysis",
+      analysis,
+    });
+  } catch (error) {
+    console.error("Some error:", error);
+  }
+};
+
+export const getHealthScore = async (req, res) => {
+  try {
+    const now = new Date();
+    const userId = req.user.userId;
+    const startOfDay = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999);
+    const todayVitals = await Vitals.find({
+      userId,
+      date: { $gte: startOfDay, $lte: endOfDay },
+    });
+    console.log(todayVitals);
+
+    const todayMeals = await Meal.find({
+      userId,
+      date: { $gte: startOfDay, $lte: endOfDay },
+    });
+    console.log(todayMeals);
+    const response = await renderHealthScore(todayVitals, todayMeals);
+    console.log(response.finalscore);
+    return res.status(200).json({
+      title: response.summary.title,
+      message: response.summary.message,
+      score: response.finalscore,
+    });
+  } catch (error) {
+    console.error("error occured", error);
   }
 };
