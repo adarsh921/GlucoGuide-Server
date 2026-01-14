@@ -34,8 +34,8 @@ app.get("/health", (req, res) => {
 
 app.use(
   cors({
-    origin: "*",
-    credentials:true
+    origin: "https://glucoguide.netlify.app/",
+    credentials: true,
   })
 );
 
