@@ -26,10 +26,11 @@ app.get("/", (req, res) => {
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "*",
     credentials:true
   })
 );
+
 app.use(express.json());
 app.use("/api/meals", mealRoutes);
 app.use("/api/auth",userRoutes);
