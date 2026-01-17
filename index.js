@@ -31,7 +31,8 @@ app.get("/health", (req, res) => {
   });
 });
 
-
+//https://glucoguide.netlify.app
+//http://localhost:5173
 app.use(
   cors({
     origin: "https://glucoguide.netlify.app",
