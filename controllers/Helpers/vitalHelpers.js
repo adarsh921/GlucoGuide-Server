@@ -3,11 +3,12 @@ const ai = new GoogleGenAI({});
 // console.log(ai);
 
 export const analyzeVitals = async (vitals) => {
-  console.log("HELLO I AM ADARSH");
+  try {
+    console.log("HELLO I AM ADARSH");
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: `
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `
     Analyze the following patient vital signs and generate a comprehensive report.
     
     ***
@@ -33,10 +34,14 @@ export const analyzeVitals = async (vitals) => {
     
     **Patient Vitals Data:**
     ${vitals}`,
-  });
-  console.log(response);
+    });
+    console.log(response);
+    
 
-  return response.text;
+    return response.text;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const renderHealthScore = async (vitals, meals) => {

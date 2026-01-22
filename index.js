@@ -4,18 +4,21 @@ import mealRoutes from "./routes/mealRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import vitalsRoutes from "./routes/vitalsRoutes.js";
 import mongoose from "mongoose";
-import cors from 'cors';
+import cors from "cors";
 dotenv.config();
 
 mongoose
-  .connect("mongodb+srv://cyber13jan:Y7Wr6Qhsw0694mhu@glucoguidedb.rybgvky.mongodb.net/?appName=GlucoGuideDB", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://cyber13jan:Y7Wr6Qhsw0694mhu@glucoguidedb.rybgvky.mongodb.net/?appName=GlucoGuideDB",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    },
+  )
   .then(() => {
     console.log("MongoDB connected successfully");
   })
-  .catch((err) => console.error("connection error",err));
+  .catch((err) => console.error("connection error", err));
 
 const app = express();
 
@@ -31,19 +34,19 @@ app.get("/health", (req, res) => {
   });
 });
 
-//https://glucoguide.netlify.app
+// https://glucoguide.netlify.app
 //http://localhost:5173
 app.use(
   cors({
     origin: "https://glucoguide.netlify.app",
     credentials: true,
-  })
+  }),
 );
 
 app.use(express.json());
 app.use("/api/meals", mealRoutes);
-app.use("/api/auth",userRoutes);
-app.use('/api/vitals',vitalsRoutes);
+app.use("/api/auth", userRoutes);
+app.use("/api/vitals", vitalsRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Server is running"));
